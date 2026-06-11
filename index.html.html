@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Institutional AI Wellness Assistant - Multi-Vector Prototyping Engine</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background-color: #f1f5f9;
+            color: #334155;
+            margin: 0;
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 95vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 820px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e2e8f0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        header h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .sos-button {
+            background-color: #ef4444;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .sos-button:hover { background-color: #dc2626; }
+
+        .navigation-tabs {
+            display: flex;
+            background-color: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab-link {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .tab-link.active-tab {
+            background-color: #ffffff;
+            color: #0d9488;
+            border-bottom: 3px solid #0d9488;
+        }
+
+        .display-panel {
+            height: 560px;
+            overflow-y: auto;
+            padding: 24px;
+            background-color: #f8fafc;
+            box-sizing: border-box;
+        }
+
+        .hidden-view { display: none !important; }
+
+        .chat-frame {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+        }
+
+        .message-history {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding-right: 6px;
+        }
+
+        .bubble {
+            max-width: 82%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14.5px;
+            line-height: 1.5;
+        }
+
+        .bubble-ai {
+            background-color: #ccfbf1;
+            color: #115e59;
+            align-self: flex-start;
+            border-top-left-radius: 3px;
+        }
+
+        .bubble-user {
+            background-color: #e2e8f0;
+            color: #1e293b;
+            align-self: flex-end;
+            border-top-right-radius: 3px;
+        }
+
+        .bubble-system {
+            background-color: #fee2e2;
+            color: #991b1b;
+            align-self: center;
+            text-align: center;
+            font-weight: 600;
+            max-width: 95%;
+            border-radius: 8px;
+            border: 1px solid #fca5a5;
+            padding: 16px;
+        }
+
+        .input-dock {
+            display: flex;
+            gap: 12px;
+            background-color: #ffffff;
+            padding-top: 16px;
+        }
+
+        .text-field {
+            flex: 1;
+            padding: 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .text-field:focus { border-color: #0d9488; }
+
+        .action-button {
+            background-color: #0d9488;
+            color: #ffffff;
+            border: none;
+            padding: 0 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .action-button:hover { background-color: #0f766e; }
+
+        .resource-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 18px;
+        }
+
+        .card-tag {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #94a3b8;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+
+        .card-heading {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 10px 0;
+        }
+
+        .interactive-trigger {
+            font-size: 13px;
+            color: #0d9488;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+            text-align: left;
+        }
+
+        .active-tool-frame {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 22px;
+            height: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .tool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+        }
+
+        .tool-back {
+            color: #64748b;
+            cursor: pointer;
+            font-weight: bold;
+            background: none;
+            border: none;
+            font-size: 14px;
+        }
+
+        .pacer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .breathing-circle {
+            width: 130px;
+            height: 130px;
+            background-color: #ccfbf1;
+            border: 4px solid #0d9488;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #115e59;
+            transition: transform 4s linear;
+        }
+
+        .cbt-wizard-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+        }
+
+        .wizard-step {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .wizard-progress {
+            font-size: 12px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .wizard-prompt {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e293b;
+            line-height: 1.4;
+        }
+
+        .wizard-input, .wizard-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            box-sizing: border-box;
+            resize: none;
+            background: #ffffff;
+        }
+
+        .wizard-slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .wizard-slider {
+            width: 100%;
+            accent-color: #0d9488;
+            cursor: pointer;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .wizard-nav-bar {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .wizard-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-primary {
+            background-color: #0d9488;
+            color: #ffffff;
+        }
+
+        .outcome-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .outcome-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .outcome-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .outcome-text {
+            font-size: 13px;
+            color: #334155;
+            margin-top: 4px;
+        }
+
+        .delta-badge {
+            background-color: #dcfce7;
+            color: #14532d;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .mini-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .info-pill {
+            background: #e0f2fe;
+            color: #075985;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .checklist {
+            display: grid;
+            gap: 8px;
+        }
+
+        .check-item {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            font-size: 13px;
+            color: #334155;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <header>
+        <h2>Student Support Portal</h2>
+        <button class="sos-button" onclick="triggerMockCrisis()">SOS / EMERGENCY</button>
+    </header>
+
+    <div class="navigation-tabs" id="mainTabBar">
+        <button class="tab-link active-tab" id="chatLink" onclick="toggleView('chat')">AI Chat Assistant</button>
+        <button class="tab-link" id="resourceLink" onclick="toggleView('resources')">Resource Vault</button>
+    </div>
+
+    <div id="panelChat" class="display-panel">
+        <div class="chat-frame">
+            <div class="message-history" id="messageBox">
+                <div class="bubble bubble-ai">
+                    Welcome. This interaction sequence is fully anonymized. Feel free to describe any issues you are facing with course loads, exam anxieties, or personal stress vectors.
+                </div>
+            </div>
+            <div class="input-dock">
+                <input type="text" id="studentInput" class="text-field" placeholder="Share what is on your mind..." onkeypress="checkEnterKey(event)">
+                <button class="action-button" onclick="executeMockPipeline()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="panelResources" class="display-panel hidden-view">
+        <div class="resource-layout" id="vaultCardList">
+            <div class="card">
+                <div class="card-tag">Cognitive Restructuring (CBT)</div>
+                <h4 class="card-heading">Negative Core Belief Decoupling Sheet</h4>
+                <button class="interactive-trigger" onclick="launchCbtWizard()">Launch Interactive CBT Sheet &rarr;</button>
+            </div>
+            <div class="card">
+                <div class="card-tag">Somatic Stress Down-Regulation</div>
+                <h4 class="card-heading">4-4-4-4 Parasympathetic Box Breathing</h4>
+                <button class="interactive-trigger" onclick="launchPacerTool()">Launch Visual Breathing Pacer &rarr;</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="panelToolSandbox" class="display-panel hidden-view" style="background-color: #f1f5f9;"></div>
+</div>
+
+<script>
+    let breathingInterval = null;
+
+    let cbtSessionData = {
+        automaticThought: "",
+        coreBelief: "I am not good enough",
+        situationContext: "",
+        initialBeliefScore: 50,
+        emotionType: "Anxiety",
+        emotionIntensity: 50,
+        evidenceSupporting: "",
+        evidenceRefuting: "",
+        balancedReframe: "",
+        copingAction: "",
+        finalBeliefScore: 50
+    };
+
+    function toggleView(targetPanel) {
+        cleanUpBreathingTool();
+        document.getElementById('chatLink').classList.toggle('active-tab', targetPanel === 'chat');
+        document.getElementById('resourceLink').classList.toggle('active-tab', targetPanel === 'resources');
+        document.getElementById('panelChat').classList.toggle('hidden-view', targetPanel !== 'chat');
+        document.getElementById('panelResources').classList.toggle('hidden-view', targetPanel !== 'resources');
+        document.getElementById('panelToolSandbox').classList.add('hidden-view');
+    }
+
+    function checkEnterKey(e) { if (e.key === 'Enter') executeMockPipeline(); }
+
+    function renderBubble(messageText, styleClass) {
+        const messageBox = document.getElementById('messageBox');
+        const newBubble = document.createElement('div');
+        newBubble.className = `bubble ${styleClass}`;
+        newBubble.innerText = messageText;
+        messageBox.appendChild(newBubble);
+        messageBox.scrollTop = messageBox.scrollHeight;
+    }
+
+    function exitToolView() {
+        cleanUpBreathingTool();
+        toggleView('resources');
+    }
+
+    function cleanUpBreathingTool() {
+        if (breathingInterval) {
+            clearInterval(breathingInterval);
+            breathingInterval = null;
+        }
+    }
+
+    function launchCbtWizard() {
+        document.getElementById('panelChat').classList.add('hidden-view');
+        document.getElementById('panelResources').classList.add('hidden-view');
+        document.getElementById('panelToolSandbox').classList.remove('hidden-view');
+        renderWizardStep(1);
+    }
+
+    function cbtHeader() {
+        return `
+            <div class="tool-header">
+                <span style="font-weight:600; color:#0f766e; font-size:14px;">CBT Core Belief Decoupling Sheet</span>
+                <button class="tool-back" onclick="exitToolView()">&times; Abort Sheet</button>
+            </div>
+        `;
+    }
+
+    function renderWizardStep(stepNumber) {
+        const sandbox = document.getElementById('panelToolSandbox');
+        let contentHtml = "";
+
+        if (stepNumber === 1) {
+            contentHtml = `
+                <div class="cbt-wizard-container">
+                    <div class="wizard-step">
+                        <div class="wizard-progress">Step 1 of 5: Situation + Thought Capture</div>
+                        <div class="wizard-prompt">What situation triggered the stress response?</div>
+                        <textarea id="step1Context" class="wizard-input" rows="2" placeholder="Describe the situation...">${cbtSessionData.situationContext}</textarea>
+
+                        <div class="wizard-prompt">Identify the automatic thought:</div>
+                        <textarea id="step1Input" class="wizard-input" rows="3" placeholder="e.g., 'If I do poorly, I am a failure.'">${cbtSessionData.automaticThought}</textarea>
+
+                        <div class="mini-grid">
+                            <div>
+                                <div class="wizard-prompt" style="font-size:13px; margin-bottom:6px;">Core belief</div>
+                                <select id="step1CoreBelief" class="wizard-select">
+                                    <option ${cbtSessionData.coreBelief === "I am not good enough" ? "selected" : ""}>I am not good enough</option>
+                                    <option ${cbtSessionData.coreBelief === "I will be rejected" ? "selected" : ""}>I will be rejected</option>
+                                    <option ${cbtSessionData.coreBelief === "I must be perfect" ? "selected" : ""}>I must be perfect</option>
+                                    <option ${cbtSessionData.coreBelief === "I will fail" ? "selected" : ""}>I will fail</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div class="wizard-prompt" style="font-size:13px; margin-bottom:6px;">Emotion</div>
+                                <select id="step1Emotion" class="wizard-select">
+                                    <option ${cbtSessionData.emotionType === "Anxiety" ? "selected" : ""}>Anxiety</option>
+                                    <option ${cbtSessionData.emotionType === "Shame" ? "selected" : ""}>Shame</option>
+                                    <option ${cbtSessionData.emotionType === "Fear" ? "selected" : ""}>Fear</option>
+                                    <option ${cbtSessionData.emotionType === "Sadness" ? "selected" : ""}>Sadness</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="wizard-slider-group">
+                            <div class="wizard-prompt" style="font-size:13px;">Belief strength: <span id="sliderVal1">${cbtSessionData.initialBeliefScore}</span>%</div>
+                            <input type="range" id="step1Slider" class="wizard-slider" min="0" max="100" value="${cbtSessionData.initialBeliefScore}" oninput="document.getElementById('sliderVal1').innerText=this.value">
+                            <div class="slider-labels"><span>0%</span><span>100%</span></div>
+                        </div>
+
+                        <div class="wizard-slider-group">
+                            <div class="wizard-prompt" style="font-size:13px;">Emotion intensity: <span id="sliderValEmotion">${cbtSessionData.emotionIntensity}</span>%</div>
+                            <input type="range" id="step1EmotionSlider" class="wizard-slider" min="0" max="100" value="${cbtSessionData.emotionIntensity}" oninput="document.getElementById('sliderValEmotion').innerText=this.value">
+                            <div class="slider-labels"><span>Calm</span><span>Overwhelmed</span></div>
+                        </div>
+                    </div>
+                    <div class="wizard-nav-bar">
+                        <button class="wizard-btn btn-secondary" onclick="exitToolView()">Cancel</button>
+                        <button class="wizard-btn btn-primary" onclick="saveStep1()">Next Block &rarr;</button>
+                    </div>
+                </div>
+            `;
+        } else if (stepNumber === 2) {
+            contentHtml = `
+                <div class="cbt-wizard-container">
+                    <div class="wizard-step">
+                        <div class="wizard-progress">Step 2 of 5: Evidence Audit</div>
+                        <div class="wizard-prompt">What facts support this thought?</div>
+                        <textarea id="step2SupportInput" class="wizard-input" rows="2" placeholder="List concrete evidence...">${cbtSessionData.evidenceSupporting}</textarea>
+
+                        <div class="wizard-prompt" style="margin-top:10px;">What facts contradict it?</div>
+                        <textarea id="step2RefuteInput" class="wizard-input" rows="2" placeholder="List evidence against it...">${cbtSessionData.evidenceRefuting}</textarea>
+
+                        <div class="info-pill">Goal: separate facts from assumptions.</div>
+                    </div>
+                    <div class="wizard-nav-bar">
+                        <button class="wizard-btn btn-secondary" onclick="renderWizardStep(1)">&larr; Back</button>
+                        <button class="wizard-btn btn-primary" onclick="saveStep2()">Next Block &rarr;</button>
+                    </div>
+                </div>
+            `;
+        } else if (stepNumber === 3) {
+            contentHtml = `
+                <div class="cbt-wizard-container">
+                    <div class="wizard-step">
+                        <div class="wizard-progress">Step 3 of 5: Balanced Reframe</div>
+                        <div class="wizard-prompt">Write a more balanced alternative thought:</div>
+                        <textarea id="step3Input" class="wizard-input" rows="3" placeholder="A realistic, kinder statement...">${cbtSessionData.balancedReframe}</textarea>
+
+                        <div class="wizard-slider-group">
+                            <div class="wizard-prompt" style="font-size:13px;">How believable is the original thought now? <span id="sliderVal2">${cbtSessionData.finalBeliefScore}</span>%</div>
+                            <input type="range" id="step3Slider" class="wizard-slider" min="0" max="100" value="${cbtSessionData.finalBeliefScore}" oninput="document.getElementById('sliderVal2').innerText=this.value">
+                            <div class="slider-labels"><span>Less believable</span><span>Still strong</span></div>
+                        </div>
+
+                        <div class="info-pill">Aim for a statement that is true, calm, and useful.</div>
+                    </div>
+                    <div class="wizard-nav-bar">
+                        <button class="wizard-btn btn-secondary" onclick="renderWizardStep(2)">&larr; Back</button>
+                        <button class="wizard-btn btn-primary" onclick="saveStep3()">Next Block &rarr;</button>
+                    </div>
+                </div>
+            `;
+        } else if (stepNumber === 4) {
+            contentHtml = `
+                <div class="cbt-wizard-container">
+                    <div class="wizard-step">
+                        <div class="wizard-progress">Step 4 of 5: Coping Plan</div>
+                        <div class="wizard-prompt">Pick one action you can take after this reflection:</div>
+                        <textarea id="step4Action" class="wizard-input" rows="3" placeholder="Example: take a 10-minute walk, review notes for 20 minutes, or message a friend.">${cbtSessionData.copingAction}</textarea>
+
+                        <div class="checklist">
+                            <label class="check-item"><input type="checkbox" id="chkBreath"> Use one breathing cycle</label>
+                            <label class="check-item"><input type="checkbox" id="chkBreak"> Take a short break</label>
+                            <label class="check-item"><input type="checkbox" id="chkTask"> Return to one small task</label>
+                        </div>
+                    </div>
+                    <div class="wizard-nav-bar">
+                        <button class="wizard-btn btn-secondary" onclick="renderWizardStep(3)">&larr; Back</button>
+                        <button class="wizard-btn btn-primary" onclick="saveStep4()">Next Block &rarr;</button>
+                    </div>
+                </div>
+            `;
+        } else if (stepNumber === 5) {
+            const beliefDelta = cbtSessionData.initialBeliefScore - cbtSessionData.finalBeliefScore;
+            contentHtml = `
+                <div class="cbt-wizard-container">
+                    <div class="wizard-step" style="gap:10px;">
+                        <div class="wizard-progress" style="color:#10b981;">Step 5 of 5: Summary</div>
+                        <div class="wizard-prompt" style="color:#115e59; font-size:16px;">Restructuring complete</div>
+
+                        <div class="outcome-grid">
+                            <div class="outcome-box">
+                                <span class="outcome-title">Situation</span>
+                                <div class="outcome-text">${cbtSessionData.situationContext}</div>
+                            </div>
+                            <div class="outcome-box">
+                                <span class="outcome-title">Automatic Thought</span>
+                                <div class="outcome-text">"${cbtSessionData.automaticThought}"</div>
+                            </div>
+                            <div class="outcome-box">
+                                <span class="outcome-title">Core Belief</span>
+                                <div class="outcome-text">${cbtSessionData.coreBelief}</div>
+                            </div>
+                            <div class="outcome-box">
+                                <span class="outcome-title">Balanced Reframe</span>
+                                <div class="outcome-text">"${cbtSessionData.balancedReframe}"</div>
+                            </div>
+                        </div>
+
+                        <div style="text-align:center; padding:10px; background-color:#f0fdf4; border-radius:8px; border:1px solid #bbf7d0; margin-top:5px;">
+                            <span style="font-size:13px; font-weight:600; color:#166534;">Change in belief strength:</span><br>
+                            <span class="delta-badge">${beliefDelta}% reduction</span>
+                        </div>
+
+                        <div class="card" style="margin-top:8px;">
+                            <div class="card-tag">Next action</div>
+                            <div class="card-heading" style="margin-bottom:6px;">Your coping plan</div>
+                            <div class="outcome-text">${cbtSessionData.copingAction || "No action entered."}</div>
+                        </div>
+                    </div>
+                    <div class="wizard-nav-bar">
+                        <button class="wizard-btn btn-secondary" onclick="renderWizardStep(4)">&larr; Back</button>
+                        <button class="wizard-btn btn-primary" onclick="closeCbtWizardAndPostToChat()">Export Matrix to Assistant Chat</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        sandbox.innerHTML = `<div class="active-tool-frame">${cbtHeader()}${contentHtml}</div>`;
+    }
+
+    function saveStep1() {
+        const txt = document.getElementById('step1Input').value.trim();
+        if (!txt) { alert("Please input your automatic thought to build the matrix."); return; }
+        cbtSessionData.situationContext = document.getElementById('step1Context').value.trim();
+        cbtSessionData.automaticThought = txt;
+        cbtSessionData.coreBelief = document.getElementById('step1CoreBelief').value;
+        cbtSessionData.emotionType = document.getElementById('step1Emotion').value;
+        cbtSessionData.initialBeliefScore = parseInt(document.getElementById('step1Slider').value);
+        cbtSessionData.emotionIntensity = parseInt(document.getElementById('step1EmotionSlider').value);
+        renderWizardStep(2);
+    }
+
+    function saveStep2() {
+        cbtSessionData.evidenceSupporting = document.getElementById('step2SupportInput').value.trim();
+        cbtSessionData.evidenceRefuting = document.getElementById('step2RefuteInput').value.trim();
+        renderWizardStep(3);
+    }
+
+    function saveStep3() {
+        const reframeTxt = document.getElementById('step3Input').value.trim();
+        if (!reframeTxt) { alert("Please formulate a balanced alternative statement."); return; }
+        cbtSessionData.balancedReframe = reframeTxt;
+        cbtSessionData.finalBeliefScore = parseInt(document.getElementById('step3Slider').value);
+        renderWizardStep(4);
+    }
+
+    function saveStep4() {
+        cbtSessionData.copingAction = document.getElementById('step4Action').value.trim();
+        renderWizardStep(5);
+    }
+
+    function closeCbtWizardAndPostToChat() {
+        toggleView('chat');
+        renderBubble(`[SYSTEM LOG: CBT sheet exported. Belief shifted from ${cbtSessionData.initialBeliefScore}% to ${cbtSessionData.finalBeliefScore}%.]`, 'bubble-system');
+        renderBubble(`I completed the CBT sheet. My balanced reframe is: "${cbtSessionData.balancedReframe}"`, 'bubble-user');
+        setTimeout(() => {
+            renderBubble("Excellent work. You separated the thought from the facts, built a balanced reframe, and chose a coping action. That makes the process much more usable in real life.", "bubble-ai");
+        }, 800);
+    }
+
+    function launchPacerTool() {
+        document.getElementById('panelChat').classList.add('hidden-view');
+        document.getElementById('panelResources').classList.add('hidden-view');
+        const sandbox = document.getElementById('panelToolSandbox');
+        sandbox.classList.remove('hidden-view');
+
+        sandbox.innerHTML = `
+            <div class="active-tool-frame">
+                <div class="tool-header">
+                    <span style="font-weight:600; color:#0f766e; font-size:14px;">Interactive Box Breathing Pacer</span>
+                    <button class="tool-back" onclick="exitToolView()">&times; Exit Tool</button>
+                </div>
+                <div class="pacer-container">
+                    <div class="breathing-circle" id="pacerCircle">Inhale</div>
+                    <p id="pacerInstructions" style="margin-top:24px; font-size:14px; color:#475569; font-weight:500; text-align:center;">Preparing vagal nerve signaling track...</p>
+                </div>
+            </div>
+        `;
+
+        const circle = document.getElementById('pacerCircle');
+        const instr = document.getElementById('pacerInstructions');
+        let state = 0;
+
+        const states = [
+            { text: "Inhale", transform: "scale(1.4)", desc: "Breathe in deeply, expanding your lungs..." },
+            { text: "Hold", transform: "scale(1.4)", desc: "Hold the oxygen steady in your chest..." },
+            { text: "Exhale", transform: "scale(1.0)", desc: "Slowly push the air out completely..." },
+            { text: "Hold", transform: "scale(1.0)", desc: "Rest in the quiet empty space before the next cycle..." }
+        ];
+
+        function runCycle() {
+            const current = states[state];
+            circle.innerText = current.text;
+            circle.style.transform = current.transform;
+            instr.innerText = current.desc;
+            state = (state + 1) % 4;
+        }
+
+        runCycle();
+        breathingInterval = setInterval(runCycle, 4000);
+    }
+
+    function processIntentClassification(rawText) {
+        const text = rawText.toLowerCase();
+
+        const crisisKeywords = ["suicide", "kill myself", "end my life", "hurt myself", "want to die", "self-harm", "overdose", "cutting myself"];
+        if (crisisKeywords.some(keyword => text.includes(keyword))) {
+            return {
+                flag: "CRITICAL_CRISIS_OVERRIDE",
+                reply: "SYSTEM EXTRICATED SAFETY OVERRIDE: I am halting our standard automated text conversation track. Because your immediate physical safety is paramount, standard loops are suspended. Please connect instantly with a human professional right now."
+            };
+        }
+
+        const academicKeywords = ["exam", "deadline", "fail", "assignment", "overwhelmed", "grades", "project", "syllabus", "procrastinating", "backlog", "viva", "presentation"];
+        if (academicKeywords.some(keyword => text.includes(keyword))) {
+            return {
+                flag: "ACADEMIC_STRESS_IDENTIFIED",
+                reply: "It looks like academic overload is hitting a critical peak. You can use the CBT sheet to capture the thought, review evidence, and create a calmer response."
+            };
+        }
+
+        const somaticKeywords = ["panic", "anxious", "heart racing", "breathing", "cannot sleep", "scared", "shaking", "chest tight", "hyperventilating", "insomnia"];
+        if (somaticKeywords.some(keyword => text.includes(keyword))) {
+            return {
+                flag: "SOMATIC_OVERLOAD_IDENTIFIED",
+                reply: "I’m noticing clear signs of nervous system arousal. You may want to try the breathing tool first, then return to the CBT worksheet if needed."
+            };
+        }
+
+        const isolationKeywords = ["lonely", "isolated", "no friends", "homesick", "disconnected", "alone", "detached", "alienated", "nobody to talk to"];
+        if (isolationKeywords.some(keyword => text.includes(keyword))) {
+            return {
+                flag: "SOCIAL_ISOLATION_IDENTIFIED",
+                reply: "That sounds isolating. You could also use the CBT sheet to challenge thoughts like 'I don't belong' and write down one small connection step."
+            };
+        }
+
+        const imposterKeywords = ["imposter", "not smart enough", "fraud", "everyone else is better", "don't belong", "stupid", "admissions mistake", "unqualified"];
+        if (imposterKeywords.some(keyword => text.includes(keyword))) {
+            return {
+                flag: "IMPOSTER_SYNDROME_ALIGNED",
+                reply: "This sounds like imposter syndrome. The CBT worksheet can help you unpack the thought, test it against evidence, and build a more balanced statement."
+            };
+        }
+
+        return {
+            flag: "STANDARD_SUPPORT_AXIS",
+            reply: "Thank you for explaining what you're experiencing. Can you share what specific coping tool or adjustment you want to explore today?"
+        };
+    }
+
+    function executeMockPipeline() {
+        const inputField = document.getElementById('studentInput');
+        const userText = inputField.value.trim();
+        if (!userText) return;
+
+        renderBubble(userText, 'bubble-user');
+        inputField.value = '';
+
+        setTimeout(() => {
+            const backendResult = processIntentClassification(userText);
+            const themeClass = (backendResult.flag === "CRITICAL_CRISIS_OVERRIDE") ? "bubble-system" : "bubble-ai";
+            renderBubble(backendResult.reply, themeClass);
+        }, 600);
+    }
+
+    function triggerMockCrisis() {
+        renderBubble("CRITICAL RISK OVERRIDE TRIGGERED: Automated conversational matching suspended. System locked into crisis routing protocols.", "bubble-system");
+    }
+</script>
+</body>
+</html>
